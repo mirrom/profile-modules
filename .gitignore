@@ -1,0 +1,9 @@
+﻿**/*.bak
+**/*.iml
+**/*.swp
+**/*.tmp
+**/*~
+**/gradle
+**/.gradle
+**/.idea/
+**/build/
