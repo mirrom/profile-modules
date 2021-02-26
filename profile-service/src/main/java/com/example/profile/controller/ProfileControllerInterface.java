@@ -24,20 +24,20 @@ import io.swagger.annotations.Api;
 interface ProfileControllerInterface {
     
     @PostMapping
-    public ResponseEntity<ProfileDto> createProfile(@RequestBody ProfileDto profileDto);
+    ResponseEntity<ProfileDto> createProfile(@RequestBody ProfileDto profileDto);
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteProfile(@PathVariable String id);
+    ResponseEntity<HttpStatus> deleteProfile(@PathVariable String id);
     
     @GetMapping("/{id}")
-    public ResponseEntity<ProfileDto> getProfile(@PathVariable String id);
+    ResponseEntity<ProfileDto> getProfile(@PathVariable String id);
     
     @GetMapping
-    public ResponseEntity<List<ProfileDto>> getProfiles(@RequestParam(defaultValue = "0") int page,
+    ResponseEntity<List<ProfileDto>> getProfiles(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "asc") String sortDirection,
             @RequestParam(defaultValue = "title") String sortBy);
     
     @PatchMapping("/{id}")
-    public ResponseEntity<ProfileDto> updateProfile(@PathVariable String id, @RequestBody ProfileDto profileDto);
+    ResponseEntity<ProfileDto> updateProfile(@PathVariable String id, @RequestBody ProfileDto profileDto);
     
 }
