@@ -1,6 +1,8 @@
 package com.example.profile.controller.sub1profile.sub1sub1profile;
 
 import com.example.profile.dto.sub1profile.sub1sub1profile.Sub1Sub1ProfileDto;
+import com.example.profile.mapper.sub1profile.Sub1ProfileMapper;
+import com.example.profile.mapper.sub1profile.sub1sub1profile.Sub1Sub1ProfileMapper;
 import com.example.profile.model.sub1profile.sub1sub1profile.Sub1Sub1Profile;
 import com.example.profile.service.sub1profile.sub1sub1profile.Sub1Sub1ProfileService;
 
@@ -10,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,6 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
     
     @Autowired
     private Sub1Sub1ProfileService sub1Sub1ProfileService;
-    
-    @Autowired
-    private ModelMapper dtoModelMapper;
-    
-    @Autowired
-    private ModelMapper pojoModelMapper;
     
     @Override
     public ResponseEntity<Sub1Sub1ProfileDto> createSub1Sub1Profile(Sub1Sub1ProfileDto sub1Sub1ProfileDto) {
@@ -94,7 +89,7 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
     @Override
     public ResponseEntity<Sub1Sub1ProfileDto> updateSub1Sub1Profile(String id, Sub1Sub1ProfileDto sub1Sub1ProfileDto) {
         
-        logger.debug("PUT /v1/profiles/sub-1-profiles/sub-1-sub-1-profiles/{}", id);
+        logger.debug("PATCH /v1/profiles/sub-1-profiles/sub-1-sub-1-profiles/{}", id);
         logger.debug("{}", sub1Sub1ProfileDto);
         
         if (ObjectId.isValid(id)) {
@@ -107,7 +102,9 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
                 
                 Sub1Sub1Profile sub1Sub1Profile = optionalSub1Sub1Profile.get();
                 
-                pojoModelMapper.map(convertToModifiedSub1Sub1Profile(sub1Sub1ProfileDto, objectId), sub1Sub1Profile);
+                Sub1ProfileMapper.INSTANCE
+                        .updateSub1Profile(convertToModifiedSub1Sub1Profile(sub1Sub1ProfileDto, objectId),
+                                sub1Sub1Profile);
                 
                 return new ResponseEntity<>(convertToSub1Sub1ProfileDto(sub1Sub1ProfileService.update(sub1Sub1Profile)),
                         HttpStatus.OK);
@@ -125,12 +122,13 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
     
     private Sub1Sub1ProfileDto convertToSub1Sub1ProfileDto(Sub1Sub1Profile sub1Sub1Profile) {
         
-        return dtoModelMapper.map(sub1Sub1Profile, Sub1Sub1ProfileDto.class);
+        return Sub1Sub1ProfileMapper.INSTANCE.sub1Sub1ProfileToSub1Sub1ProfileDto(sub1Sub1Profile);
     }
     
     private Sub1Sub1Profile convertToNewSub1Sub1Profile(Sub1Sub1ProfileDto sub1Sub1ProfileDto) {
         
-        Sub1Sub1Profile sub1Sub1Profile = dtoModelMapper.map(sub1Sub1ProfileDto, Sub1Sub1Profile.class);
+        Sub1Sub1Profile sub1Sub1Profile =
+                Sub1Sub1ProfileMapper.INSTANCE.sub1Sub1profileDtoToSub1Sub1Profile(sub1Sub1ProfileDto);
         
         sub1Sub1Profile.setId(new ObjectId());
         sub1Sub1Profile.setCreatedAt(LocalDateTime.now());
@@ -141,7 +139,8 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
     
     private Sub1Sub1Profile convertToModifiedSub1Sub1Profile(Sub1Sub1ProfileDto sub1Sub1ProfileDto, ObjectId objectId) {
         
-        Sub1Sub1Profile sub1Sub1Profile = dtoModelMapper.map(sub1Sub1ProfileDto, Sub1Sub1Profile.class);
+        Sub1Sub1Profile sub1Sub1Profile =
+                Sub1Sub1ProfileMapper.INSTANCE.sub1Sub1profileDtoToSub1Sub1Profile(sub1Sub1ProfileDto);
         
         sub1Sub1Profile.setId(objectId);
         sub1Sub1Profile.setModifiedAt(LocalDateTime.now());
