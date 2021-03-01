@@ -1,10 +1,14 @@
 package com.example.profile.service.sub1profile;
 
 import com.example.profile.model.sub1profile.Sub1Profile;
+import com.example.profile.predicate.sub1profile.Sub1ProfilePredicatesBuilder;
 import com.example.profile.repository.sub1profile.Sub1ProfileRepository;
 import com.example.profile.service.Serviceable;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +35,32 @@ public class Sub1ProfileService implements Serviceable<Sub1Profile> {
     }
     
     @Override
-    public Iterable<Sub1Profile> get(int page, int size, String sortDirection, String sortBy) {
+    public Iterable<Sub1Profile> get(int page, int size, String sortDirection, String sortBy, String search) {
         
-        return sub1ProfileRepository
-                .findAll(PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
+        Sub1ProfilePredicatesBuilder sub1ProfilePredicatesBuilder = new Sub1ProfilePredicatesBuilder();
+        
+        if (search != null) {
+            
+            Pattern pattern = Pattern.compile("(\\w+?)([:<>()])(.+?),");
+            Matcher matcher = pattern.matcher(search + ",");
+            
+            while (matcher.find()) {
+                sub1ProfilePredicatesBuilder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+            }
+        }
+        
+        BooleanExpression booleanExpression = sub1ProfilePredicatesBuilder.build();
+        
+        if (booleanExpression != null) {
+            
+            return sub1ProfileRepository.findAll(booleanExpression,
+                    PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
+            
+        } else {
+            
+            return sub1ProfileRepository
+                    .findAll(PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
+        }
     }
     
     @Override

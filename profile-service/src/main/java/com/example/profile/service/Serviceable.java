@@ -11,7 +11,7 @@ public interface Serviceable<T> {
     
     void delete(ObjectId objectId);
     
-    Iterable<T> get(int page, int size, String sortDirection, String sortBy);
+    Iterable<T> get(int page, int size, String sortDirection, String sortBy, String search);
     
     Optional<T> get(ObjectId objectId);
     

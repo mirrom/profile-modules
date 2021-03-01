@@ -72,13 +72,15 @@ class ProfileController implements ProfileControllerInterface {
     }
     
     @Override
-    public ResponseEntity<List<ProfileDto>> getProfiles(int page, int size, String sortDirection, String sortBy) {
+    public ResponseEntity<List<ProfileDto>> getProfiles(int page, int size, String sortDirection, String sortBy,
+            String search) {
         
-        logger.debug("GET /v1/profiles?page={}&size={}&sortDirection={}&sortBy={}", page, size, sortDirection, sortBy);
+        logger.debug("GET /v1/profiles?page={}&size={}&sortDirection={}&sortBy={}&search={}", page, size, sortDirection,
+                sortBy, search);
         
         List<ProfileDto> profileDtos = new ArrayList<>();
         
-        profileService.get(page, size, sortDirection, sortBy)
+        profileService.get(page, size, sortDirection, sortBy, search)
                 .forEach(profile -> profileDtos.add(convertToProfileDto(profile)));
         
         return new ResponseEntity<>(profileDtos, HttpStatus.OK);

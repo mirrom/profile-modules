@@ -72,15 +72,16 @@ class Sub1ProfileController implements Sub1ProfileControllerInterface {
         }
     }
     
+    @Override
     public ResponseEntity<List<Sub1ProfileDto>> getSub1Profiles(int page, int size, String sortDirection,
-            String sortBy) {
+            String sortBy, String search) {
         
         logger.debug("GET /v1/profiles/sub-1-profiles?page={}&size={}&sortDirection={}&sortBy={}", page, size,
                 sortDirection, sortBy);
         
         List<Sub1ProfileDto> sub1ProfileDtos = new ArrayList<>();
         
-        sub1ProfileService.get(page, size, sortDirection, sortBy)
+        sub1ProfileService.get(page, size, sortDirection, sortBy, search)
                 .forEach(sub1Profile -> sub1ProfileDtos.add(convertToSub1ProfileDto(sub1Profile)));
         
         return new ResponseEntity<>(sub1ProfileDtos, HttpStatus.OK);

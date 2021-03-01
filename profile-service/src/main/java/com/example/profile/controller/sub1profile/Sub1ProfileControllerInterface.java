@@ -36,7 +36,7 @@ interface Sub1ProfileControllerInterface {
     @GetMapping
     ResponseEntity<List<Sub1ProfileDto>> getSub1Profiles(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "asc") String sortDirection,
-            @RequestParam(defaultValue = "title") String sortBy);
+            @RequestParam(defaultValue = "title") String sortBy, @RequestParam(defaultValue = "") String search);
     
     @PatchMapping("/{id}")
     ResponseEntity<Sub1ProfileDto> updateSub1Profile(@PathVariable String id,
