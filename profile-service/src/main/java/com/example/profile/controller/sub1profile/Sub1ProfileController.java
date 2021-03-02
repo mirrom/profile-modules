@@ -130,8 +130,6 @@ class Sub1ProfileController implements Sub1ProfileControllerInterface {
         Sub1Profile sub1Profile = Sub1ProfileMapper.INSTANCE.dtoToModel(sub1ProfileDto);
         
         sub1Profile.setId(new ObjectId());
-        sub1Profile.setCreatedAt(LocalDateTime.now());
-        sub1Profile.setModifiedAt(sub1Profile.getCreatedAt());
         
         return sub1Profile;
     }
@@ -141,7 +139,6 @@ class Sub1ProfileController implements Sub1ProfileControllerInterface {
         Sub1Profile sub1Profile = Sub1ProfileMapper.INSTANCE.dtoToModel(sub1ProfileDto);
         
         sub1Profile.setId(objectId);
-        sub1Profile.setModifiedAt(LocalDateTime.now());
         
         return sub1Profile;
     }

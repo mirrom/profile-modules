@@ -127,8 +127,6 @@ class ProfileController implements ProfileControllerInterface {
         Profile profile = ProfileMapper.INSTANCE.dtoToModel(profileDto);
         
         profile.setId(new ObjectId());
-        profile.setCreatedAt(LocalDateTime.now());
-        profile.setModifiedAt(profile.getCreatedAt());
         
         return profile;
     }
@@ -138,7 +136,6 @@ class ProfileController implements ProfileControllerInterface {
         Profile profile = ProfileMapper.INSTANCE.dtoToModel(profileDto);
         
         profile.setId(objectId);
-        profile.setModifiedAt(LocalDateTime.now());
         
         return profile;
     }

@@ -6,7 +6,6 @@ import com.example.profile.mapping.mapper.sub1profile.sub1sub1profile.Sub1Sub1Pr
 import com.example.profile.model.sub1profile.sub1sub1profile.Sub1Sub1Profile;
 import com.example.profile.service.sub1profile.sub1sub1profile.Sub1Sub1ProfileService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -131,8 +130,6 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
         Sub1Sub1Profile sub1Sub1Profile = Sub1Sub1ProfileMapper.INSTANCE.dtoToModel(sub1Sub1ProfileDto);
         
         sub1Sub1Profile.setId(new ObjectId());
-        sub1Sub1Profile.setCreatedAt(LocalDateTime.now());
-        sub1Sub1Profile.setModifiedAt(sub1Sub1Profile.getCreatedAt());
         
         return sub1Sub1Profile;
     }
@@ -142,7 +139,6 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
         Sub1Sub1Profile sub1Sub1Profile = Sub1Sub1ProfileMapper.INSTANCE.dtoToModel(sub1Sub1ProfileDto);
         
         sub1Sub1Profile.setId(objectId);
-        sub1Sub1Profile.setModifiedAt(LocalDateTime.now());
         
         return sub1Sub1Profile;
     }
