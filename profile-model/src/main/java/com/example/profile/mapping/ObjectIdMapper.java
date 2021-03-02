@@ -1,4 +1,4 @@
-package com.example.profile.mapper;
+package com.example.profile.mapping;
 
 import org.bson.types.ObjectId;
 

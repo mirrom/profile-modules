@@ -1,29 +1,26 @@
-package com.example.profile.mapper;
+package com.example.profile.mapping;
 
 import com.example.profile.dto.ProfileDto;
 import com.example.profile.model.Profile;
 
-import org.mapstruct.Mapper;
+import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.factory.Mappers;
 
 
-@Mapper(uses = ObjectIdMapper.class,
+@MapperConfig(uses = ObjectIdMapper.class,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface ProfileMapper {
-    
-    ProfileMapper INSTANCE = Mappers.getMapper(ProfileMapper.class);
+public interface ProfileMappings {
     
     @Mapping(target = "createdAt",
             ignore = true)
     @Mapping(target = "modifiedAt",
             ignore = true)
-    Profile profileDtoToProfile(ProfileDto profileDto);
+    Profile anyDtoToModel(ProfileDto profileDto);
     
-    ProfileDto profileToProfileDto(Profile profile);
+    ProfileDto anyModelToDto(Profile profile);
     
-    Profile updateProfile(Profile source, @MappingTarget Profile target);
+    void anyUpdateModel(Profile source, @MappingTarget Profile target);
     
 }

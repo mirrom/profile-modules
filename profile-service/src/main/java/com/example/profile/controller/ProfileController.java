@@ -1,7 +1,7 @@
 package com.example.profile.controller;
 
 import com.example.profile.dto.ProfileDto;
-import com.example.profile.mapper.ProfileMapper;
+import com.example.profile.mapping.mapper.ProfileMapper;
 import com.example.profile.model.Profile;
 import com.example.profile.service.ProfileService;
 
@@ -102,7 +102,7 @@ class ProfileController implements ProfileControllerInterface {
                 
                 Profile profile = optionalProfile.get();
                 
-                ProfileMapper.INSTANCE.updateProfile(convertToModifiedProfile(profileDto, objectId), profile);
+                ProfileMapper.INSTANCE.updateModel(convertToModifiedProfile(profileDto, objectId), profile);
                 
                 return new ResponseEntity<>(convertToProfileDto(profileService.update(profile)), HttpStatus.OK);
                 
@@ -119,12 +119,12 @@ class ProfileController implements ProfileControllerInterface {
     
     private ProfileDto convertToProfileDto(Profile profile) {
         
-        return ProfileMapper.INSTANCE.profileToProfileDto(profile);
+        return ProfileMapper.INSTANCE.modelToDto(profile);
     }
     
     private Profile convertToNewProfile(ProfileDto profileDto) {
         
-        Profile profile = ProfileMapper.INSTANCE.profileDtoToProfile(profileDto);
+        Profile profile = ProfileMapper.INSTANCE.dtoToModel(profileDto);
         
         profile.setId(new ObjectId());
         profile.setCreatedAt(LocalDateTime.now());
@@ -135,7 +135,7 @@ class ProfileController implements ProfileControllerInterface {
     
     private Profile convertToModifiedProfile(ProfileDto profileDto, ObjectId objectId) {
         
-        Profile profile = ProfileMapper.INSTANCE.profileDtoToProfile(profileDto);
+        Profile profile = ProfileMapper.INSTANCE.dtoToModel(profileDto);
         
         profile.setId(objectId);
         profile.setModifiedAt(LocalDateTime.now());

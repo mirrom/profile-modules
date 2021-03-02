@@ -1,7 +1,7 @@
 package com.example.profile.controller.sub1profile;
 
 import com.example.profile.dto.sub1profile.Sub1ProfileDto;
-import com.example.profile.mapper.sub1profile.Sub1ProfileMapper;
+import com.example.profile.mapping.mapper.sub1profile.Sub1ProfileMapper;
 import com.example.profile.model.sub1profile.Sub1Profile;
 import com.example.profile.service.sub1profile.Sub1ProfileService;
 
@@ -104,7 +104,7 @@ class Sub1ProfileController implements Sub1ProfileControllerInterface {
                 Sub1Profile sub1Profile = optionalSub1Profile.get();
                 
                 Sub1ProfileMapper.INSTANCE
-                        .updateSub1Profile(convertToModifiedSub1Profile(sub1ProfileDto, objectId), sub1Profile);
+                        .updateModel(convertToModifiedSub1Profile(sub1ProfileDto, objectId), sub1Profile);
                 
                 return new ResponseEntity<>(convertToSub1ProfileDto(sub1ProfileService.update(sub1Profile)),
                         HttpStatus.OK);
@@ -122,12 +122,12 @@ class Sub1ProfileController implements Sub1ProfileControllerInterface {
     
     private Sub1ProfileDto convertToSub1ProfileDto(Sub1Profile sub1Profile) {
         
-        return Sub1ProfileMapper.INSTANCE.sub1ProfileToSub1ProfileDto(sub1Profile);
+        return Sub1ProfileMapper.INSTANCE.modelToDto(sub1Profile);
     }
     
     private Sub1Profile convertToNewSub1Profile(Sub1ProfileDto sub1ProfileDto) {
         
-        Sub1Profile sub1Profile = Sub1ProfileMapper.INSTANCE.sub1profileDtoToSub1Profile(sub1ProfileDto);
+        Sub1Profile sub1Profile = Sub1ProfileMapper.INSTANCE.dtoToModel(sub1ProfileDto);
         
         sub1Profile.setId(new ObjectId());
         sub1Profile.setCreatedAt(LocalDateTime.now());
@@ -138,7 +138,7 @@ class Sub1ProfileController implements Sub1ProfileControllerInterface {
     
     private Sub1Profile convertToModifiedSub1Profile(Sub1ProfileDto sub1ProfileDto, ObjectId objectId) {
         
-        Sub1Profile sub1Profile = Sub1ProfileMapper.INSTANCE.sub1profileDtoToSub1Profile(sub1ProfileDto);
+        Sub1Profile sub1Profile = Sub1ProfileMapper.INSTANCE.dtoToModel(sub1ProfileDto);
         
         sub1Profile.setId(objectId);
         sub1Profile.setModifiedAt(LocalDateTime.now());
