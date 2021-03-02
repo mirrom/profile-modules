@@ -1,24 +1,25 @@
 package com.example.profile.search;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Arrays;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 public class SearchCriteria {
+    
+    private static final List<String> COMPARATORS = Arrays.asList("<", ">", ":", "(", ")");
     
     private String field;
     private String comparator;
     private Object value;
     
-    public SearchCriteria(final String field, final String comparator, final Object value) {
+    public boolean isValid() {
         
-        super();
-        
-        setField(field);
-        setComparator(comparator);
-        setValue(value);
+        return field != null && COMPARATORS.contains(comparator) && value != null;
     }
     
 }

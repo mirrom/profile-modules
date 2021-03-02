@@ -1,13 +1,11 @@
 package com.example.profile.service;
 
 import com.example.profile.model.Profile;
-import com.example.profile.predicate.ProfilePredicatesBuilder;
+import com.example.profile.predicate.BasicPredicateBuilder;
 import com.example.profile.repository.ProfileRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,30 +34,14 @@ public class ProfileService implements Serviceable<Profile> {
     @Override
     public Iterable<Profile> get(int page, int size, String sortDirection, String sortBy, String search) {
         
-        ProfilePredicatesBuilder profilePredicatesBuilder = new ProfilePredicatesBuilder();
+        BasicPredicateBuilder<Profile> basicPredicateBuilder = new BasicPredicateBuilder<>(Profile.class, "profile");
         
-        if (search != null) {
-            
-            Pattern pattern = Pattern.compile("(\\w+?)([:<>()])(.+?),");
-            Matcher matcher = pattern.matcher(search + ",");
-            
-            while (matcher.find()) {
-                profilePredicatesBuilder.with(matcher.group(1), matcher.group(2), matcher.group(3));
-            }
-        }
+        basicPredicateBuilder.from(search);
         
-        BooleanExpression booleanExpression = profilePredicatesBuilder.build();
+        BooleanExpression booleanExpression = basicPredicateBuilder.build();
         
-        if (booleanExpression != null) {
-            
-            return profileRepository.findAll(booleanExpression,
-                    PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
-            
-        } else {
-            
-            return profileRepository
-                    .findAll(PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
-        }
+        return profileRepository.findAll(booleanExpression,
+                PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
     }
     
     @Override

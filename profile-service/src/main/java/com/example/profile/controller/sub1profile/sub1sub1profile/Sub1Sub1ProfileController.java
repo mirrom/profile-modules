@@ -76,8 +76,9 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
     public ResponseEntity<List<Sub1Sub1ProfileDto>> getSub1Sub1Profiles(int page, int size, String sortDirection,
             String sortBy, String search) {
         
-        logger.debug("GET /v1/profiles/sub-1-profiles/sub-1-sub-1-profiles?page={}&size={}&sortDirection={}&sortBy={}",
-                page, size, sortDirection, sortBy);
+        logger.debug(
+                "GET /v1/profiles/sub-1-profiles/sub-1-sub-1-profiles?page={}&size={}&sortDirection={}&sortBy={}&search={}",
+                page, size, sortDirection, sortBy, search);
         
         List<Sub1Sub1ProfileDto> sub1Sub1ProfileDtos = new ArrayList<>();
         
