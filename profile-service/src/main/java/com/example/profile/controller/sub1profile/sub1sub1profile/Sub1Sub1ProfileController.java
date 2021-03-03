@@ -1,7 +1,6 @@
 package com.example.profile.controller.sub1profile.sub1sub1profile;
 
 import com.example.profile.dto.sub1profile.sub1sub1profile.Sub1Sub1ProfileDto;
-import com.example.profile.mapping.mapper.sub1profile.Sub1ProfileMapper;
 import com.example.profile.mapping.mapper.sub1profile.sub1sub1profile.Sub1Sub1ProfileMapper;
 import com.example.profile.model.sub1profile.sub1sub1profile.Sub1Sub1Profile;
 import com.example.profile.service.sub1profile.sub1sub1profile.Sub1Sub1ProfileService;
@@ -25,7 +24,10 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
     private static final Logger logger = LoggerFactory.getLogger(Sub1Sub1ProfileController.class);
     
     @Autowired
-    private Sub1Sub1ProfileService sub1Sub1ProfileService;
+    private Sub1Sub1ProfileMapper mapper;
+    
+    @Autowired
+    private Sub1Sub1ProfileService service;
     
     @Override
     public ResponseEntity<Sub1Sub1ProfileDto> createSub1Sub1Profile(Sub1Sub1ProfileDto sub1Sub1ProfileDto) {
@@ -33,8 +35,8 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
         logger.debug("POST /v1/profiles/sub-1-profiles/sub-1-sub-1-profiles");
         logger.debug("{}", sub1Sub1ProfileDto);
         
-        return new ResponseEntity<>(convertToSub1Sub1ProfileDto(
-                sub1Sub1ProfileService.create(convertToNewSub1Sub1Profile(sub1Sub1ProfileDto))), HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.modelToDto(service.create(mapper.dtoToModel(sub1Sub1ProfileDto))),
+                HttpStatus.CREATED);
     }
     
     @Override
@@ -44,7 +46,7 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
         
         if (ObjectId.isValid(id)) {
             
-            sub1Sub1ProfileService.delete(new ObjectId(id));
+            service.delete(new ObjectId(id));
             
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             
@@ -61,9 +63,9 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
         
         if (ObjectId.isValid(id)) {
             
-            return sub1Sub1ProfileService.get(new ObjectId(id))
-                    .map(sub1Sub1Profile -> new ResponseEntity<>(convertToSub1Sub1ProfileDto(sub1Sub1Profile),
-                            HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            return service.get(new ObjectId(id))
+                    .map(sub1Sub1Profile -> new ResponseEntity<>(mapper.modelToDto(sub1Sub1Profile), HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
             
         } else {
             
@@ -81,8 +83,8 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
         
         List<Sub1Sub1ProfileDto> sub1Sub1ProfileDtos = new ArrayList<>();
         
-        sub1Sub1ProfileService.get(page, size, sortDirection, sortBy, search)
-                .forEach(sub1Sub1Profile -> sub1Sub1ProfileDtos.add(convertToSub1Sub1ProfileDto(sub1Sub1Profile)));
+        service.get(page, size, sortDirection, sortBy, search)
+                .forEach(sub1Sub1Profile -> sub1Sub1ProfileDtos.add(mapper.modelToDto(sub1Sub1Profile)));
         
         return new ResponseEntity<>(sub1Sub1ProfileDtos, HttpStatus.OK);
     }
@@ -97,17 +99,15 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
             
             ObjectId objectId = new ObjectId(id);
             
-            Optional<Sub1Sub1Profile> optionalSub1Sub1Profile = sub1Sub1ProfileService.get(objectId);
+            Optional<Sub1Sub1Profile> optionalSub1Sub1Profile = service.get(objectId);
             
             if (optionalSub1Sub1Profile.isPresent()) {
                 
                 Sub1Sub1Profile sub1Sub1Profile = optionalSub1Sub1Profile.get();
                 
-                Sub1ProfileMapper.INSTANCE
-                        .updateModel(convertToModifiedSub1Sub1Profile(sub1Sub1ProfileDto, objectId), sub1Sub1Profile);
+                mapper.updateModel(mapper.dtoToModel(sub1Sub1ProfileDto, objectId), sub1Sub1Profile);
                 
-                return new ResponseEntity<>(convertToSub1Sub1ProfileDto(sub1Sub1ProfileService.update(sub1Sub1Profile)),
-                        HttpStatus.OK);
+                return new ResponseEntity<>(mapper.modelToDto(service.update(sub1Sub1Profile)), HttpStatus.OK);
                 
             } else {
                 
@@ -118,29 +118,6 @@ class Sub1Sub1ProfileController implements Sub1Sub1ProfileControllerInterface {
             
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-    }
-    
-    private Sub1Sub1ProfileDto convertToSub1Sub1ProfileDto(Sub1Sub1Profile sub1Sub1Profile) {
-        
-        return Sub1Sub1ProfileMapper.INSTANCE.modelToDto(sub1Sub1Profile);
-    }
-    
-    private Sub1Sub1Profile convertToNewSub1Sub1Profile(Sub1Sub1ProfileDto sub1Sub1ProfileDto) {
-        
-        Sub1Sub1Profile sub1Sub1Profile = Sub1Sub1ProfileMapper.INSTANCE.dtoToModel(sub1Sub1ProfileDto);
-        
-        sub1Sub1Profile.setId(new ObjectId());
-        
-        return sub1Sub1Profile;
-    }
-    
-    private Sub1Sub1Profile convertToModifiedSub1Sub1Profile(Sub1Sub1ProfileDto sub1Sub1ProfileDto, ObjectId objectId) {
-        
-        Sub1Sub1Profile sub1Sub1Profile = Sub1Sub1ProfileMapper.INSTANCE.dtoToModel(sub1Sub1ProfileDto);
-        
-        sub1Sub1Profile.setId(objectId);
-        
-        return sub1Sub1Profile;
     }
     
 }

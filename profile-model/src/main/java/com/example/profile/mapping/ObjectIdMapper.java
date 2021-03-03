@@ -1,8 +1,10 @@
 package com.example.profile.mapping;
 
 import org.bson.types.ObjectId;
+import org.springframework.stereotype.Component;
 
 
+@Component
 public class ObjectIdMapper {
     
     public String objectIdToString(ObjectId objectId) {

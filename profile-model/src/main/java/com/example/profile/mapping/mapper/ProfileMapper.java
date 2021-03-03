@@ -4,24 +4,23 @@ import com.example.profile.dto.ProfileDto;
 import com.example.profile.mapping.ProfileMappings;
 import com.example.profile.model.Profile;
 
-import org.mapstruct.InheritConfiguration;
+import org.bson.types.ObjectId;
+import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
 
-@Mapper(config = ProfileMappings.class)
+@Mapper(componentModel = "spring",
+        config = ProfileMappings.class)
+@DecoratedWith(ProfileMapperDecorator.class)
 public interface ProfileMapper {
     
-    ProfileMapper INSTANCE = Mappers.getMapper(ProfileMapper.class);
+    Profile dtoToModel(ProfileDto profileDto);
     
-    @InheritConfiguration(name = "anyDtoToModel")
-    Profile dtoToModel(ProfileDto dto);
+    Profile dtoToModel(ProfileDto dto, ObjectId objectId);
     
-    @InheritConfiguration(name = "anyModelToDto")
     ProfileDto modelToDto(Profile model);
     
-    @InheritConfiguration(name = "anyUpdateModel")
     void updateModel(Profile source, @MappingTarget Profile target);
     
 }

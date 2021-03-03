@@ -5,7 +5,6 @@ import com.example.profile.mapping.mapper.ProfileMapper;
 import com.example.profile.model.Profile;
 import com.example.profile.service.ProfileService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,10 @@ class ProfileController implements ProfileControllerInterface {
     private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
     
     @Autowired
-    private ProfileService profileService;
+    private ProfileMapper mapper;
+    
+    @Autowired
+    private ProfileService service;
     
     @Override
     public ResponseEntity<ProfileDto> createProfile(ProfileDto profileDto) {
@@ -33,7 +35,7 @@ class ProfileController implements ProfileControllerInterface {
         logger.debug("POST /v1/profiles");
         logger.debug("{}", profileDto);
         
-        return new ResponseEntity<>(convertToProfileDto(profileService.create(convertToNewProfile(profileDto))),
+        return new ResponseEntity<>(mapper.modelToDto(service.create(mapper.dtoToModel(profileDto))),
                 HttpStatus.CREATED);
     }
     
@@ -44,7 +46,7 @@ class ProfileController implements ProfileControllerInterface {
         
         if (ObjectId.isValid(id)) {
             
-            profileService.delete(new ObjectId(id));
+            service.delete(new ObjectId(id));
             
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             
@@ -61,8 +63,8 @@ class ProfileController implements ProfileControllerInterface {
         
         if (ObjectId.isValid(id)) {
             
-            return profileService.get(new ObjectId(id))
-                    .map(profile -> new ResponseEntity<>(convertToProfileDto(profile), HttpStatus.OK))
+            return service.get(new ObjectId(id))
+                    .map(profile -> new ResponseEntity<>(mapper.modelToDto(profile), HttpStatus.OK))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
             
         } else {
@@ -80,8 +82,8 @@ class ProfileController implements ProfileControllerInterface {
         
         List<ProfileDto> profileDtos = new ArrayList<>();
         
-        profileService.get(page, size, sortDirection, sortBy, search)
-                .forEach(profile -> profileDtos.add(convertToProfileDto(profile)));
+        service.get(page, size, sortDirection, sortBy, search)
+                .forEach(profile -> profileDtos.add(mapper.modelToDto(profile)));
         
         return new ResponseEntity<>(profileDtos, HttpStatus.OK);
     }
@@ -96,15 +98,15 @@ class ProfileController implements ProfileControllerInterface {
             
             ObjectId objectId = new ObjectId(id);
             
-            Optional<Profile> optionalProfile = profileService.get(objectId);
+            Optional<Profile> optionalProfile = service.get(objectId);
             
             if (optionalProfile.isPresent()) {
                 
                 Profile profile = optionalProfile.get();
                 
-                ProfileMapper.INSTANCE.updateModel(convertToModifiedProfile(profileDto, objectId), profile);
+                mapper.updateModel(mapper.dtoToModel(profileDto, objectId), profile);
                 
-                return new ResponseEntity<>(convertToProfileDto(profileService.update(profile)), HttpStatus.OK);
+                return new ResponseEntity<>(mapper.modelToDto(service.update(profile)), HttpStatus.OK);
                 
             } else {
                 
@@ -115,29 +117,6 @@ class ProfileController implements ProfileControllerInterface {
             
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-    }
-    
-    private ProfileDto convertToProfileDto(Profile profile) {
-        
-        return ProfileMapper.INSTANCE.modelToDto(profile);
-    }
-    
-    private Profile convertToNewProfile(ProfileDto profileDto) {
-        
-        Profile profile = ProfileMapper.INSTANCE.dtoToModel(profileDto);
-        
-        profile.setId(new ObjectId());
-        
-        return profile;
-    }
-    
-    private Profile convertToModifiedProfile(ProfileDto profileDto, ObjectId objectId) {
-        
-        Profile profile = ProfileMapper.INSTANCE.dtoToModel(profileDto);
-        
-        profile.setId(objectId);
-        
-        return profile;
     }
     
 }
