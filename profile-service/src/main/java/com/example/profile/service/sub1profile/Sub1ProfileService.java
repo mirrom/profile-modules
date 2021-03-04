@@ -1,61 +1,36 @@
 package com.example.profile.service.sub1profile;
 
+import com.example.profile.model.sub1profile.QSub1Profile;
 import com.example.profile.model.sub1profile.Sub1Profile;
-import com.example.profile.predicate.BasicPredicateBuilder;
-import com.example.profile.repository.sub1profile.Sub1ProfileRepository;
-import com.example.profile.service.Serviceable;
+import com.example.profile.predicate.BasePredicateBuilder;
+import com.example.profile.repository.BaseRepository;
+import com.example.profile.service.BaseService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
-import java.util.Optional;
-
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class Sub1ProfileService implements Serviceable<Sub1Profile> {
+public class Sub1ProfileService extends BaseService<Sub1Profile, QSub1Profile> {
     
     @Autowired
-    private Sub1ProfileRepository sub1ProfileRepository;
-    
-    public Sub1Profile create(Sub1Profile sub1Profile) {
+    public Sub1ProfileService(BaseRepository<Sub1Profile, QSub1Profile> repository) {
         
-        return sub1ProfileRepository.save(sub1Profile);
-    }
-    
-    @Override
-    public void delete(ObjectId objectId) {
-        
-        sub1ProfileRepository.deleteById(objectId);
+        super(repository);
     }
     
     @Override
     public Iterable<Sub1Profile> get(int page, int size, String sortDirection, String sortBy, String search) {
         
-        BasicPredicateBuilder<Sub1Profile> basicPredicateBuilder =
-                new BasicPredicateBuilder<>(Sub1Profile.class, "sub1Profile");
+        BasePredicateBuilder<Sub1Profile> basePredicateBuilder =
+                new BasePredicateBuilder<>(Sub1Profile.class, Sub1Profile.class.getName());
         
-        basicPredicateBuilder.from(search);
+        basePredicateBuilder.from(search);
         
-        BooleanExpression booleanExpression = basicPredicateBuilder.build();
+        BooleanExpression booleanExpression = basePredicateBuilder.build();
         
-        return sub1ProfileRepository.findAll(booleanExpression,
-                PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
-    }
-    
-    @Override
-    public Optional<Sub1Profile> get(ObjectId objectId) {
-        
-        return sub1ProfileRepository.findById(objectId);
-    }
-    
-    @Override
-    public Sub1Profile update(Sub1Profile sub1Profile) {
-        
-        return sub1ProfileRepository.save(sub1Profile);
+        return super.get(page, size, sortDirection, sortBy, booleanExpression);
     }
     
 }

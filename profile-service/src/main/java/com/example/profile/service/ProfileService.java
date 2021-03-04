@@ -1,59 +1,35 @@
 package com.example.profile.service;
 
 import com.example.profile.model.Profile;
-import com.example.profile.predicate.BasicPredicateBuilder;
-import com.example.profile.repository.ProfileRepository;
+import com.example.profile.model.QProfile;
+import com.example.profile.predicate.BasePredicateBuilder;
+import com.example.profile.repository.BaseRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
-import java.util.Optional;
-
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class ProfileService implements Serviceable<Profile> {
+public class ProfileService extends BaseService<Profile, QProfile> {
     
     @Autowired
-    private ProfileRepository profileRepository;
-    
-    public Profile create(Profile profile) {
+    public ProfileService(BaseRepository<Profile, QProfile> repository) {
         
-        return profileRepository.save(profile);
-    }
-    
-    @Override
-    public void delete(ObjectId objectId) {
-        
-        profileRepository.deleteById(objectId);
+        super(repository);
     }
     
     @Override
     public Iterable<Profile> get(int page, int size, String sortDirection, String sortBy, String search) {
         
-        BasicPredicateBuilder<Profile> basicPredicateBuilder = new BasicPredicateBuilder<>(Profile.class, "profile");
+        BasePredicateBuilder<Profile> basePredicateBuilder =
+                new BasePredicateBuilder<>(Profile.class, Profile.class.getName());
         
-        basicPredicateBuilder.from(search);
+        basePredicateBuilder.from(search);
         
-        BooleanExpression booleanExpression = basicPredicateBuilder.build();
+        BooleanExpression booleanExpression = basePredicateBuilder.build();
         
-        return profileRepository.findAll(booleanExpression,
-                PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
-    }
-    
-    @Override
-    public Optional<Profile> get(ObjectId objectId) {
-        
-        return profileRepository.findById(objectId);
-    }
-    
-    @Override
-    public Profile update(Profile profile) {
-        
-        return profileRepository.save(profile);
+        return super.get(page, size, sortDirection, sortBy, booleanExpression);
     }
     
 }

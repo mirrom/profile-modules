@@ -5,16 +5,16 @@ import java.util.Optional;
 import org.bson.types.ObjectId;
 
 
-public interface Serviceable<T> {
+public interface Serviceable<M> {
     
-    T create(T profile);
+    M create(M model);
     
     void delete(ObjectId objectId);
     
-    Iterable<T> get(int page, int size, String sortDirection, String sortBy, String search);
+    Iterable<M> get(int page, int size, String sortDirection, String sortBy, String search);
     
-    Optional<T> get(ObjectId objectId);
+    Optional<M> get(ObjectId objectId);
     
-    T update(T profile);
+    M update(M model);
     
 }

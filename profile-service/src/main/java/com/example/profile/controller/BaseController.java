@@ -45,7 +45,7 @@ public abstract class BaseController<M, D> implements BaseControllerInterface<D>
         if (ObjectId.isValid(id)) {
             
             return service.get(new ObjectId(id))
-                    .map(profile -> new ResponseEntity<>(mapper.modelToDto(profile), HttpStatus.OK))
+                    .map(model -> new ResponseEntity<>(mapper.modelToDto(model), HttpStatus.OK))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
             
         } else {
@@ -58,7 +58,7 @@ public abstract class BaseController<M, D> implements BaseControllerInterface<D>
         
         List<D> dtos = new ArrayList<>();
         
-        service.get(page, size, sortDirection, sortBy, search).forEach(profile -> dtos.add(mapper.modelToDto(profile)));
+        service.get(page, size, sortDirection, sortBy, search).forEach(model -> dtos.add(mapper.modelToDto(model)));
         
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
@@ -69,11 +69,11 @@ public abstract class BaseController<M, D> implements BaseControllerInterface<D>
             
             ObjectId objectId = new ObjectId(id);
             
-            Optional<M> optionalProfile = service.get(objectId);
+            Optional<M> optionalModel = service.get(objectId);
             
-            if (optionalProfile.isPresent()) {
+            if (optionalModel.isPresent()) {
                 
-                M model = optionalProfile.get();
+                M model = optionalModel.get();
                 
                 mapper.updateModel(mapper.dtoToModel(dto, objectId), model);
                 

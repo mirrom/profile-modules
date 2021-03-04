@@ -12,13 +12,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
-public class BasicPredicateBuilder<P> {
+public class BasePredicateBuilder<P> {
     
     private final List<SearchCriteria> searchCriterias;
     private final Class<P> clazz;
     private final String collectionName;
     
-    public BasicPredicateBuilder(Class<P> clazz, String collectionName) {
+    public BasePredicateBuilder(Class<P> clazz, String collectionName) {
         
         searchCriterias = new ArrayList<>();
         this.clazz = clazz;
@@ -30,7 +30,7 @@ public class BasicPredicateBuilder<P> {
         BooleanExpression result = getClassPredicate();
         
         final List<BooleanExpression> predicates = searchCriterias.stream().map(searchCriteria -> {
-            BasicPredicate<P> predicate = new BasicPredicate<>(searchCriteria);
+            BasePredicate<P> predicate = new BasePredicate<>(searchCriteria);
             return predicate.getPredicate(clazz, collectionName);
         }).filter(Objects::nonNull).collect(Collectors.toList());
         

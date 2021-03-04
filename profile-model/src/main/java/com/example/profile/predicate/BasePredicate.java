@@ -11,11 +11,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 
-public class BasicPredicate<P> {
+public class BasePredicate<P> {
     
     private final SearchCriteria searchCriteria;
     
-    BasicPredicate(SearchCriteria searchCriteria) {
+    BasePredicate(SearchCriteria searchCriteria) {
         
         this.searchCriteria = searchCriteria;
     }
