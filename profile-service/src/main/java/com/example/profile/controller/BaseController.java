@@ -1,0 +1,93 @@
+package com.example.profile.controller;
+
+import com.example.profile.mapping.mapper.BaseMapper;
+import com.example.profile.service.Serviceable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+
+public abstract class BaseController<M, D> implements BaseControllerInterface<D> {
+    
+    @Autowired
+    private BaseMapper<M, D> mapper;
+    
+    @Autowired
+    private Serviceable<M> service;
+    
+    public ResponseEntity<D> create(D dto) {
+        
+        return new ResponseEntity<>(mapper.modelToDto(service.create(mapper.dtoToModel(dto))), HttpStatus.CREATED);
+    }
+    
+    public ResponseEntity<HttpStatus> delete(String id) {
+        
+        if (ObjectId.isValid(id)) {
+            
+            service.delete(new ObjectId(id));
+            
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    public ResponseEntity<D> get(String id) {
+        
+        if (ObjectId.isValid(id)) {
+            
+            return service.get(new ObjectId(id))
+                    .map(profile -> new ResponseEntity<>(mapper.modelToDto(profile), HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    public ResponseEntity<List<D>> get(int page, int size, String sortDirection, String sortBy, String search) {
+        
+        List<D> dtos = new ArrayList<>();
+        
+        service.get(page, size, sortDirection, sortBy, search).forEach(profile -> dtos.add(mapper.modelToDto(profile)));
+        
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+    
+    public ResponseEntity<D> update(String id, D dto) {
+        
+        if (ObjectId.isValid(id)) {
+            
+            ObjectId objectId = new ObjectId(id);
+            
+            Optional<M> optionalProfile = service.get(objectId);
+            
+            if (optionalProfile.isPresent()) {
+                
+                M model = optionalProfile.get();
+                
+                mapper.updateModel(mapper.dtoToModel(dto, objectId), model);
+                
+                return new ResponseEntity<>(mapper.modelToDto(service.update(model)), HttpStatus.OK);
+                
+            } else {
+                
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+}

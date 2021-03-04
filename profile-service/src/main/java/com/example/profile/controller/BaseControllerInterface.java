@@ -1,7 +1,5 @@
 package com.example.profile.controller;
 
-import com.example.profile.dto.ProfileDto;
-
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -12,32 +10,26 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.swagger.annotations.Api;
 
-
-@Api("/v1/profiles")
-@RequestMapping(value = "/v1/profiles",
-        produces = {"application/json"})
-interface ProfileControllerInterface {
+interface BaseControllerInterface<D> {
     
     @PostMapping
-    ResponseEntity<ProfileDto> createProfile(@RequestBody ProfileDto profileDto);
+    ResponseEntity<D> create(@RequestBody D dto);
     
     @DeleteMapping("/{id}")
-    ResponseEntity<HttpStatus> deleteProfile(@PathVariable String id);
+    ResponseEntity<HttpStatus> delete(@PathVariable String id);
     
     @GetMapping("/{id}")
-    ResponseEntity<ProfileDto> getProfile(@PathVariable String id);
+    ResponseEntity<D> get(@PathVariable String id);
     
     @GetMapping
-    ResponseEntity<List<ProfileDto>> getProfiles(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "asc") String sortDirection,
+    ResponseEntity<List<D>> get(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "asc") String sortDirection,
             @RequestParam(defaultValue = "title") String sortBy, @RequestParam(defaultValue = "") String search);
     
     @PatchMapping("/{id}")
-    ResponseEntity<ProfileDto> updateProfile(@PathVariable String id, @RequestBody ProfileDto profileDto);
+    ResponseEntity<D> update(@PathVariable String id, @RequestBody D dto);
     
 }
