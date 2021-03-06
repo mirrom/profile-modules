@@ -12,6 +12,6 @@ public class Sub1Sub1ProfileDto extends Sub1ProfileDto {
     
     private String sub1Sub1String;
     
-    private int sub1Sub1Integer;
+    private Integer sub1Sub1Integer;
     
 }

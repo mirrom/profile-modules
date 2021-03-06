@@ -15,6 +15,6 @@ public class Sub1Sub1Profile extends Sub1Profile {
     
     private String sub1Sub1String;
     
-    private int sub1Sub1Integer;
+    private Integer sub1Sub1Integer;
     
 }
