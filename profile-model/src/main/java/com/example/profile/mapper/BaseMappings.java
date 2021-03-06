@@ -1,7 +1,7 @@
-package com.example.profile.mapping;
+package com.example.profile.mapper;
 
-import com.example.profile.dto.ProfileDto;
-import com.example.profile.model.Profile;
+import com.example.profile.dto.BaseDto;
+import com.example.profile.model.BaseModel;
 
 import org.bson.types.ObjectId;
 import org.mapstruct.MapperConfig;
@@ -16,7 +16,7 @@ import org.mapstruct.ReportingPolicy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         mappingInheritanceStrategy = MappingInheritanceStrategy.AUTO_INHERIT_FROM_CONFIG)
-public interface ProfileMappings {
+public interface BaseMappings {
     
     @Mapping(target = "id",
             ignore = true)
@@ -24,7 +24,7 @@ public interface ProfileMappings {
             ignore = true)
     @Mapping(target = "modifiedAt",
             ignore = true)
-    Profile anyDtoToModel(ProfileDto profileDto);
+    BaseModel anyDtoToModel(BaseDto dto);
     
     @Mapping(target = "id",
             ignore = true)
@@ -32,10 +32,10 @@ public interface ProfileMappings {
             ignore = true)
     @Mapping(target = "modifiedAt",
             ignore = true)
-    Profile anyDtoToModel(ProfileDto profileDto, ObjectId objectId);
+    BaseModel anyDtoToModel(BaseDto dto, ObjectId objectId);
     
-    ProfileDto anyModelToDto(Profile profile);
+    BaseDto anyModelToDto(BaseModel model);
     
-    void anyUpdateModel(Profile source, @MappingTarget Profile target);
+    void anyUpdateModel(BaseModel source, @MappingTarget BaseModel target);
     
 }

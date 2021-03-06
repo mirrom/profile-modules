@@ -1,7 +1,7 @@
 package com.example.profile.controller;
 
-import com.example.profile.mapping.mapper.BaseMapper;
-import com.example.profile.service.Serviceable;
+import com.example.profile.mapper.BaseMapper;
+import com.example.profile.service.BaseServiceInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public abstract class BaseController<M, D> implements BaseControllerInterface<D>
     private BaseMapper<M, D> mapper;
     
     @Autowired
-    private Serviceable<M> service;
+    private BaseServiceInterface<M> service;
     
     public ResponseEntity<D> create(D dto) {
         

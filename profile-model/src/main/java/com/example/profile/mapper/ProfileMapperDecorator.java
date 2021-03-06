@@ -1,4 +1,4 @@
-package com.example.profile.mapping.mapper;
+package com.example.profile.mapper;
 
 import com.example.profile.dto.ProfileDto;
 import com.example.profile.model.Profile;

@@ -1,4 +1,4 @@
-package com.example.profile.mapping.mapper.sub1profile;
+package com.example.profile.mapper.sub1profile;
 
 import com.example.profile.dto.sub1profile.Sub1ProfileDto;
 import com.example.profile.model.sub1profile.Sub1Profile;

@@ -1,23 +1,17 @@
 package com.example.profile.dto;
 
-import java.time.LocalDateTime;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 
 @Data
-public class ProfileDto {
-    
-    private String id;
+@EqualsAndHashCode(callSuper = true)
+public class ProfileDto extends BaseDto {
     
     @ApiModelProperty(required = true)
     private String title;
     
     private String description;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime modifiedAt;
     
 }

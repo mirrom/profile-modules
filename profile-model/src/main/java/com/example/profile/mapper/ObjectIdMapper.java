@@ -1,4 +1,4 @@
-package com.example.profile.mapping;
+package com.example.profile.mapper;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;

@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.bson.types.ObjectId;
 
 
-public interface Serviceable<M> {
+public interface BaseServiceInterface<M> {
     
     M create(M model);
     

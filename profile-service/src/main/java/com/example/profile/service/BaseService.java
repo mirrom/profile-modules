@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 
-public abstract class BaseService<M, Q extends EntityPath<?>> implements Serviceable<M> {
+public abstract class BaseService<M, Q extends EntityPath<?>> implements BaseServiceInterface<M> {
     
     protected BaseRepository<M, Q> repository;
     
@@ -46,9 +46,9 @@ public abstract class BaseService<M, Q extends EntityPath<?>> implements Service
     }
     
     @Override
-    public M update(M profile) {
+    public M update(M model) {
         
-        return repository.save(profile);
+        return repository.save(model);
     }
     
 }
