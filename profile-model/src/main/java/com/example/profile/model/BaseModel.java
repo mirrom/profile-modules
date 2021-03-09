@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -33,6 +34,7 @@ public abstract class BaseModel {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
     
+    @Transient
     private Type type;
     
 }
