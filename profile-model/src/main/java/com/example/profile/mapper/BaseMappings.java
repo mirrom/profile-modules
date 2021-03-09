@@ -18,19 +18,23 @@ import org.mapstruct.ReportingPolicy;
         mappingInheritanceStrategy = MappingInheritanceStrategy.AUTO_INHERIT_FROM_CONFIG)
 public interface BaseMappings {
     
-    @Mapping(target = "id",
-            ignore = true)
     @Mapping(target = "createdAt",
             ignore = true)
+    @Mapping(target = "id",
+            ignore = true)
     @Mapping(target = "modifiedAt",
+            ignore = true)
+    @Mapping(target = "type",
             ignore = true)
     BaseModel anyDtoToModel(BaseDto dto);
     
-    @Mapping(target = "id",
-            ignore = true)
     @Mapping(target = "createdAt",
             ignore = true)
+    @Mapping(target = "id",
+            ignore = true)
     @Mapping(target = "modifiedAt",
+            ignore = true)
+    @Mapping(target = "type",
             ignore = true)
     BaseModel anyDtoToModel(BaseDto dto, ObjectId objectId);
     

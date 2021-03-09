@@ -1,5 +1,7 @@
 package com.example.profile.model;
 
+import com.example.profile.property.Type;
+
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -30,5 +32,7 @@ public abstract class BaseModel {
     
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+    
+    private Type type;
     
 }

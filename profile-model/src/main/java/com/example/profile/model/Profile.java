@@ -1,5 +1,7 @@
 package com.example.profile.model;
 
+import com.example.profile.property.Type;
+
 import javax.persistence.Entity;
 
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -18,5 +20,12 @@ public class Profile extends BaseModel {
     
     @Indexed
     private String description;
+    
+    public Profile() {
+        
+        super();
+        
+        setType(Type.PROFILE);
+    }
     
 }
