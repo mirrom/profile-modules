@@ -1,5 +1,6 @@
 package com.example.profile.service;
 
+import com.example.profile.model.BaseModel;
 import com.example.profile.repository.BaseRepository;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 
-public abstract class BaseService<M, Q extends EntityPath<?>> implements BaseServiceInterface<M> {
+public abstract class BaseService<M extends BaseModel, Q extends EntityPath<?>> implements BaseServiceInterface<M> {
     
     protected BaseRepository<M, Q> repository;
     

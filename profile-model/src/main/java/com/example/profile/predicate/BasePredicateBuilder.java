@@ -1,5 +1,6 @@
 package com.example.profile.predicate;
 
+import com.example.profile.model.BaseModel;
 import com.example.profile.search.SearchCriteria;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -12,13 +13,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
-public class BasePredicateBuilder<P> {
+public class BasePredicateBuilder<M extends BaseModel> {
     
     private final List<SearchCriteria> searchCriterias;
-    private final Class<P> clazz;
+    private final Class<M> clazz;
     private final String collectionName;
     
-    public BasePredicateBuilder(Class<P> clazz, String collectionName) {
+    public BasePredicateBuilder(Class<M> clazz, String collectionName) {
         
         searchCriterias = new ArrayList<>();
         this.clazz = clazz;
@@ -30,7 +31,7 @@ public class BasePredicateBuilder<P> {
         BooleanExpression result = getClassPredicate();
         
         final List<BooleanExpression> predicates = searchCriterias.stream().map(searchCriteria -> {
-            BasePredicate<P> predicate = new BasePredicate<>(searchCriteria);
+            BasePredicate<M> predicate = new BasePredicate<>(searchCriteria);
             return predicate.getPredicate(clazz, collectionName);
         }).filter(Objects::nonNull).collect(Collectors.toList());
         
@@ -71,7 +72,7 @@ public class BasePredicateBuilder<P> {
     
     private BooleanExpression getClassPredicate() {
         
-        PathBuilder<P> entityPathBuilder = new PathBuilder<>(clazz, collectionName);
+        PathBuilder<M> entityPathBuilder = new PathBuilder<>(clazz, collectionName);
         
         return entityPathBuilder.getString("_class").startsWithIgnoreCase(clazz.getPackageName());
     }

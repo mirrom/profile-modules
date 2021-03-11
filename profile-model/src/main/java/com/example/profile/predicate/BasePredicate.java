@@ -1,5 +1,6 @@
 package com.example.profile.predicate;
 
+import com.example.profile.model.BaseModel;
 import com.example.profile.search.SearchCriteria;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DatePath;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 
-public class BasePredicate<P> {
+public class BasePredicate<M extends BaseModel> {
     
     private final SearchCriteria searchCriteria;
     
@@ -20,9 +21,9 @@ public class BasePredicate<P> {
         this.searchCriteria = searchCriteria;
     }
     
-    BooleanExpression getPredicate(Class<P> clazz, String collectionName) {
+    BooleanExpression getPredicate(Class<M> clazz, String collectionName) {
         
-        PathBuilder<P> entityPathBuilder = new PathBuilder<>(clazz, collectionName);
+        PathBuilder<M> entityPathBuilder = new PathBuilder<>(clazz, collectionName);
         
         if (isDate(searchCriteria.getValue().toString())) {
             

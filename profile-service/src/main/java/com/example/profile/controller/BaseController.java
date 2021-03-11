@@ -1,6 +1,8 @@
 package com.example.profile.controller;
 
+import com.example.profile.dto.BaseDto;
 import com.example.profile.mapper.BaseMapper;
+import com.example.profile.model.BaseModel;
 import com.example.profile.service.BaseServiceInterface;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 
-public abstract class BaseController<M, D> implements BaseControllerInterface<D> {
+public abstract class BaseController<M extends BaseModel, D extends BaseDto> implements BaseControllerInterface<D> {
     
     @Autowired
     private BaseMapper<M, D> mapper;

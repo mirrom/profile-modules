@@ -1,5 +1,6 @@
 package com.example.profile.repository;
 
+import com.example.profile.model.BaseModel;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringPath;
@@ -14,7 +15,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 
 @NoRepositoryBean
-public interface BaseRepository<M, Q extends EntityPath<?>>
+public interface BaseRepository<M extends BaseModel, Q extends EntityPath<?>>
         extends MongoRepository<M, ObjectId>, QuerydslPredicateExecutor<M>, QuerydslBinderCustomizer<Q> {
     
     @Override

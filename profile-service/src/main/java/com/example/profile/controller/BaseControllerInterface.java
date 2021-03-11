@@ -1,5 +1,7 @@
 package com.example.profile.controller;
 
+import com.example.profile.dto.BaseDto;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-interface BaseControllerInterface<D> {
+interface BaseControllerInterface<D extends BaseDto> {
     
     @PostMapping
     ResponseEntity<D> create(@RequestBody D dto);
