@@ -28,6 +28,8 @@ dependencies {
     
     implementation project(":profile-model")
     
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }

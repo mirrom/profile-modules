@@ -44,7 +44,6 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jpa"
     annotationProcessor "javax.annotation:javax.annotation-api:${javaxAnnotationVersion}"
     annotationProcessor "org.hibernate.javax.persistence:hibernate-jpa-2.1-api:${hibernateJpaVersion}"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
     
