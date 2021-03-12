@@ -8,11 +8,15 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 
 public abstract class BaseService<M extends BaseModel, Q extends EntityPath<?>> implements BaseServiceInterface<M> {
+    
+    @Autowired
+    LinkService linkService;
     
     protected BaseRepository<M, Q> repository;
     
@@ -31,6 +35,8 @@ public abstract class BaseService<M extends BaseModel, Q extends EntityPath<?>> 
     public void delete(ObjectId objectId) {
         
         repository.deleteById(objectId);
+        linkService.deleteBySourceId(objectId);
+        linkService.deleteByTargetId(objectId);
     }
     
     public Iterable<M> get(int page, int size, String sortDirection, String sortBy,

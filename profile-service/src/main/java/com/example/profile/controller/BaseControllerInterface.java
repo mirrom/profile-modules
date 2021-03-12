@@ -1,8 +1,11 @@
 package com.example.profile.controller;
 
 import com.example.profile.dto.BaseDto;
+import com.example.profile.dto.LinkDto;
+import com.example.profile.property.LinkType;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +36,29 @@ interface BaseControllerInterface<D extends BaseDto> {
     
     @PatchMapping("/{id}")
     ResponseEntity<D> update(@PathVariable String id, @RequestBody D dto);
+    
+    @PostMapping("/{id}/links")
+    ResponseEntity<LinkDto> createLink(@PathVariable(name = "id") String sourceId, @RequestParam String targetId,
+            @RequestParam LinkType linkType);
+    
+    @DeleteMapping("/{id}/links")
+    ResponseEntity<HttpStatus> deleteLink(@PathVariable(name = "id") String sourceId, @RequestParam String targetId,
+            @RequestParam LinkType linkType);
+    
+    @GetMapping("/{id}/links")
+    ResponseEntity<Map<String, List<LinkDto>>> getLinks(@PathVariable(name = "id") String sourceId,
+            @RequestParam(defaultValue = "ANY") LinkType linkType);
+    
+    @PostMapping("/{id}/backlinks")
+    ResponseEntity<LinkDto> createBacklink(@PathVariable(name = "id") String targetId, @RequestParam String sourceId,
+            @RequestParam LinkType linkType);
+    
+    @DeleteMapping("/{id}/backlinks")
+    ResponseEntity<HttpStatus> deleteBacklink(@PathVariable(name = "id") String targetId, @RequestParam String sourceId,
+            @RequestParam LinkType linkType);
+    
+    @GetMapping("/{id}/backlinks")
+    ResponseEntity<Map<String, List<LinkDto>>> getBacklinks(@PathVariable(name = "id") String targetId,
+            @RequestParam(defaultValue = "ANY") LinkType linkType);
     
 }

@@ -4,7 +4,6 @@ import com.example.profile.controller.BaseController;
 import com.example.profile.dto.sub1profile.sub1sub1profile.Sub1Sub1ProfileDto;
 import com.example.profile.model.sub1profile.sub1sub1profile.Sub1Sub1Profile;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
