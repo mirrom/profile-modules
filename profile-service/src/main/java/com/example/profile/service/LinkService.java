@@ -51,7 +51,7 @@ public class LinkService {
     
     public Iterable<Link> getBySourceIdAndLinkType(ObjectId sourceId, LinkType linkType) {
         
-        if (linkType == LinkType.ANY) {
+        if (linkType == null) {
             
             return linkRepository.findBySourceId(sourceId);
             
@@ -64,7 +64,7 @@ public class LinkService {
     
     public Iterable<Link> getByTargetIdAndLinkType(ObjectId targetId, LinkType linkType) {
         
-        if (linkType == LinkType.ANY) {
+        if (linkType == null) {
             
             return linkRepository.findByTargetId(targetId);
             

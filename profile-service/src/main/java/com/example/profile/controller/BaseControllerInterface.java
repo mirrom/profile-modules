@@ -47,7 +47,7 @@ interface BaseControllerInterface<D extends BaseDto> {
     
     @GetMapping("/{id}/links")
     ResponseEntity<Map<String, List<LinkDto>>> getLinks(@PathVariable(name = "id") String sourceId,
-            @RequestParam(defaultValue = "ANY") LinkType linkType);
+            @RequestParam(required = false) LinkType linkType);
     
     @PostMapping("/{id}/backlinks")
     ResponseEntity<LinkDto> createBacklink(@PathVariable(name = "id") String targetId, @RequestParam String sourceId,
@@ -59,6 +59,6 @@ interface BaseControllerInterface<D extends BaseDto> {
     
     @GetMapping("/{id}/backlinks")
     ResponseEntity<Map<String, List<LinkDto>>> getBacklinks(@PathVariable(name = "id") String targetId,
-            @RequestParam(defaultValue = "ANY") LinkType linkType);
+            @RequestParam(required = false) LinkType linkType);
     
 }
