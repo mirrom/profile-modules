@@ -2,19 +2,28 @@ package com.example.profile.controller;
 
 import com.example.profile.dto.BaseDto;
 import com.example.profile.dto.LinkDto;
+import com.example.profile.dto.ProfileRatingDto;
+import com.example.profile.dto.RatingDto;
 import com.example.profile.mapper.BaseMapper;
 import com.example.profile.mapper.LinkMapper;
+import com.example.profile.mapper.RatingMapper;
 import com.example.profile.model.BaseModel;
+import com.example.profile.model.Rating;
 import com.example.profile.property.LinkType;
+import com.example.profile.property.RatingType;
 import com.example.profile.service.BaseServiceInterface;
 import com.example.profile.service.LinkService;
+import com.example.profile.service.RatingService;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +40,16 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
     private LinkMapper linkMapper;
     
     @Autowired
+    private RatingMapper ratingMapper;
+    
+    @Autowired
     private BaseServiceInterface<M> service;
     
     @Autowired
     private LinkService linkService;
+    
+    @Autowired
+    private RatingService ratingService;
     
     public ResponseEntity<D> create(D dto) {
         
@@ -214,6 +229,76 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
                             .collect(Collectors.toList())));
             
             return new ResponseEntity<>(stringLinkDtosMap, HttpStatus.OK);
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<RatingDto> createOrUpdateRating(String profileId, Long userId, RatingType ratingType,
+            Integer userRating) {
+        
+        if (ObjectId.isValid(profileId)) {
+            
+            return new ResponseEntity<>(ratingMapper
+                    .modelToDto(ratingService.createOrUpdate(new ObjectId(profileId), userId, ratingType, userRating)),
+                    HttpStatus.OK);
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<HttpStatus> deleteRatings(String profileId, Long userId, RatingType ratingType) {
+        
+        if (ObjectId.isValid(profileId)) {
+            
+            ratingService.delete(new ObjectId(profileId), userId, ratingType);
+            
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<Map<String, ProfileRatingDto>> getRatings(String profileId) {
+        
+        if (ObjectId.isValid(profileId)) {
+            
+            Map<String, ProfileRatingDto> stringProfileRatingDtoMap = new HashMap<>();
+            
+            Iterable<Rating> ratings = ratingService.getByProfileId(new ObjectId(profileId));
+            
+            List<RatingType> ratingTypes = new ArrayList<>();
+            
+            ratings.forEach(rating -> ratingTypes.add(rating.getRatingType()));
+            
+            ratingTypes.stream().distinct().forEach(ratingType -> {
+                
+                List<Rating> filteredRatings = StreamSupport.stream(ratings.spliterator(), false)
+                        .filter(rating -> rating.getRatingType() == ratingType).collect(Collectors.toList());
+                
+                IntSummaryStatistics intSummaryStatistics =
+                        filteredRatings.stream().mapToInt(Rating::getUserRating).summaryStatistics();
+                
+                ProfileRatingDto profileRatingDto = new ProfileRatingDto();
+                
+                profileRatingDto.setAverageRating(BigDecimal.valueOf(intSummaryStatistics.getAverage()));
+                profileRatingDto.setRatingsCount(intSummaryStatistics.getCount());
+                profileRatingDto.setUserRatings(filteredRatings.stream().collect(
+                        Collectors.toMap(rating -> String.valueOf(rating.getUserId()), Rating::getUserRating)));
+                
+                stringProfileRatingDtoMap.put(ratingType.name(), profileRatingDto);
+            });
+            
+            return new ResponseEntity<>(stringProfileRatingDtoMap, HttpStatus.OK);
             
         } else {
             

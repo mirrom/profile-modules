@@ -2,7 +2,10 @@ package com.example.profile.controller;
 
 import com.example.profile.dto.BaseDto;
 import com.example.profile.dto.LinkDto;
+import com.example.profile.dto.ProfileRatingDto;
+import com.example.profile.dto.RatingDto;
 import com.example.profile.property.LinkType;
+import com.example.profile.property.RatingType;
 
 import java.util.List;
 import java.util.Map;
@@ -60,5 +63,16 @@ interface BaseControllerInterface<D extends BaseDto> {
     @GetMapping("/{id}/backlinks")
     ResponseEntity<Map<String, List<LinkDto>>> getBacklinks(@PathVariable(name = "id") String targetId,
             @RequestParam(required = false) LinkType linkType);
+    
+    @PostMapping("/{id}/ratings")
+    ResponseEntity<RatingDto> createOrUpdateRating(@PathVariable(name = "id") String profileId,
+            @RequestParam Long userId, @RequestParam RatingType ratingType, @RequestParam Integer userRating);
+    
+    @DeleteMapping("/{id}/ratings")
+    ResponseEntity<HttpStatus> deleteRatings(@PathVariable(name = "id") String profileId,
+            @RequestParam(required = false) Long userId, @RequestParam(required = false) RatingType ratingType);
+    
+    @GetMapping("/{id}/ratings")
+    ResponseEntity<Map<String, ProfileRatingDto>> getRatings(@PathVariable(name = "id") String profileId);
     
 }
