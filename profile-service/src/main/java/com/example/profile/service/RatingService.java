@@ -39,20 +39,40 @@ public class RatingService {
         
         if (userId != null && ratingType != null) {
             
-            ratingRepository.deleteByProfileIdAndUserIdAndRatingType(profileId, userId, ratingType);
+            deleteByProfileIdAndUserIdAndRatingType(profileId, userId, ratingType);
             
         } else if (userId != null) {
             
-            ratingRepository.deleteByProfileIdAndUserId(profileId, userId);
+            deleteByProfileIdAndUserId(profileId, userId);
             
         } else if (ratingType != null) {
             
-            ratingRepository.deleteByProfileIdAndRatingType(profileId, ratingType);
+            deleteByProfileIdAndRatingType(profileId, ratingType);
             
         } else {
             
-            ratingRepository.deleteByProfileId(profileId);
+            deleteByProfileId(profileId);
         }
+    }
+    
+    public void deleteByProfileId(ObjectId profileId) {
+        
+        ratingRepository.deleteByProfileId(profileId);
+    }
+    
+    public void deleteByProfileIdAndUserId(ObjectId profileId, long userId) {
+        
+        ratingRepository.deleteByProfileIdAndUserId(profileId, userId);
+    }
+    
+    public void deleteByProfileIdAndRatingType(ObjectId profileId, RatingType ratingType) {
+        
+        ratingRepository.deleteByProfileIdAndRatingType(profileId, ratingType);
+    }
+    
+    public void deleteByProfileIdAndUserIdAndRatingType(ObjectId profileId, long userId, RatingType ratingType) {
+        
+        ratingRepository.deleteByProfileIdAndUserIdAndRatingType(profileId, userId, ratingType);
     }
     
     public Iterable<Rating> getByProfileId(ObjectId profileId) {

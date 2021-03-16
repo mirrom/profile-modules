@@ -18,6 +18,9 @@ public abstract class BaseService<M extends BaseModel, Q extends EntityPath<?>> 
     @Autowired
     LinkService linkService;
     
+    @Autowired
+    RatingService ratingService;
+    
     protected BaseRepository<M, Q> repository;
     
     protected BaseService(BaseRepository<M, Q> repository) {
@@ -37,6 +40,7 @@ public abstract class BaseService<M extends BaseModel, Q extends EntityPath<?>> 
         repository.deleteById(objectId);
         linkService.deleteBySourceId(objectId);
         linkService.deleteByTargetId(objectId);
+        ratingService.deleteByProfileId(objectId);
     }
     
     public Iterable<M> get(int page, int size, String sortDirection, String sortBy,
