@@ -4,8 +4,6 @@ import com.example.profile.model.Link;
 import com.example.profile.property.LinkType;
 import com.example.profile.repository.LinkRepository;
 
-import java.util.Optional;
-
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +17,11 @@ public class LinkService {
     
     public Link create(ObjectId sourceId, ObjectId targetId, LinkType linkType) {
         
-        Optional<Link> optionalLink = linkRepository.findBySourceIdAndTargetIdAndLinkType(sourceId, targetId, linkType);
+        var optionalLink = linkRepository.findBySourceIdAndTargetIdAndLinkType(sourceId, targetId, linkType);
         
         return optionalLink.orElseGet(() -> {
             
-            Link link = new Link();
+            var link = new Link();
             
             link.setId(new ObjectId());
             link.setSourceId(sourceId);

@@ -3,10 +3,7 @@ package com.example.profile.predicate;
 import com.example.profile.model.BaseModel;
 import com.example.profile.search.SearchCriteria;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.DatePath;
-import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.PathBuilder;
-import com.querydsl.core.types.dsl.StringPath;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -23,14 +20,13 @@ public class BasePredicate<M extends BaseModel> {
     
     BooleanExpression getPredicate(Class<M> clazz, String collectionName) {
         
-        PathBuilder<M> entityPathBuilder = new PathBuilder<>(clazz, collectionName);
+        var entityPathBuilder = new PathBuilder<>(clazz, collectionName);
         
         if (isDate(searchCriteria.getValue().toString())) {
             
-            DatePath<LocalDate> localDateDatePath =
-                    entityPathBuilder.getDate(searchCriteria.getField(), LocalDate.class);
+            var localDateDatePath = entityPathBuilder.getDate(searchCriteria.getField(), LocalDate.class);
             
-            LocalDate value = LocalDate.parse(searchCriteria.getValue().toString());
+            var value = LocalDate.parse(searchCriteria.getValue().toString());
             
             switch (searchCriteria.getComparator()) {
                 
@@ -49,10 +45,9 @@ public class BasePredicate<M extends BaseModel> {
             
         } else if (isNumber(searchCriteria.getValue().toString())) {
             
-            NumberPath<Integer> integerNumberPath =
-                    entityPathBuilder.getNumber(searchCriteria.getField(), Integer.class);
+            var integerNumberPath = entityPathBuilder.getNumber(searchCriteria.getField(), Integer.class);
             
-            Integer value = Integer.parseInt(searchCriteria.getValue().toString());
+            var value = Integer.parseInt(searchCriteria.getValue().toString());
             
             switch (searchCriteria.getComparator()) {
                 
@@ -71,7 +66,7 @@ public class BasePredicate<M extends BaseModel> {
             
         } else {
             
-            StringPath stringPath = entityPathBuilder.getString(searchCriteria.getField());
+            var stringPath = entityPathBuilder.getString(searchCriteria.getField());
             
             if (searchCriteria.getComparator().equalsIgnoreCase(":")) {
                 

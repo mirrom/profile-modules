@@ -21,7 +21,7 @@ public abstract class LinkMapperDecorator implements LinkMapper {
     @Override
     public LinkDto modelToDto(Link link) {
         
-        LinkDto linkDto = delegate.modelToDto(link);
+        var linkDto = delegate.modelToDto(link);
         
         profileService.get(new ObjectId(linkDto.getSourceId()))
                 .ifPresent(profile -> linkDto.setSourceTitle(profile.getTitle()));

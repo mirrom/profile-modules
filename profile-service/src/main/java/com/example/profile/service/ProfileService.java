@@ -4,7 +4,6 @@ import com.example.profile.model.Profile;
 import com.example.profile.model.QProfile;
 import com.example.profile.predicate.BasePredicateBuilder;
 import com.example.profile.repository.BaseRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class ProfileService extends BaseService<Profile, QProfile> {
         
         basePredicateBuilder.from(search);
         
-        BooleanExpression booleanExpression = basePredicateBuilder.build();
+        var booleanExpression = basePredicateBuilder.build();
         
         return super.get(page, size, sortDirection, sortBy, booleanExpression);
     }

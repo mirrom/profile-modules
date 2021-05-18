@@ -8,7 +8,6 @@ import com.querydsl.core.types.dsl.PathBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class BasePredicateBuilder<M extends BaseModel> {
     
     public BooleanExpression build() {
         
-        BooleanExpression result = getClassPredicate();
+        var result = getClassPredicate();
         
         final List<BooleanExpression> predicates = searchCriterias.stream().map(searchCriteria -> {
             BasePredicate<M> predicate = new BasePredicate<>(searchCriteria);
@@ -47,13 +46,12 @@ public class BasePredicateBuilder<M extends BaseModel> {
         
         if (search != null) {
             
-            Pattern pattern = Pattern.compile("([\\w.]+?)([:<>()])([\\w.\\- ]+?),");
-            Matcher matcher = pattern.matcher(search + ",");
+            var pattern = Pattern.compile("([\\w.]+?)([:<>()])([\\w.\\- ]+?),");
+            var matcher = pattern.matcher(search + ",");
             
             while (matcher.find()) {
                 
-                SearchCriteria searchCriteria =
-                        new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3));
+                var searchCriteria = new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3));
                 
                 if (!searchCriteria.isValid()) {
                     

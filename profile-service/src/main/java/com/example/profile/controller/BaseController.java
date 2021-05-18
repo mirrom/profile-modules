@@ -18,7 +18,6 @@ import com.example.profile.service.RatingService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -97,13 +96,13 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
         
         if (ObjectId.isValid(id)) {
             
-            ObjectId objectId = new ObjectId(id);
+            var objectId = new ObjectId(id);
             
             Optional<M> optionalModel = service.get(objectId);
             
             if (optionalModel.isPresent()) {
                 
-                M model = optionalModel.get();
+                var model = optionalModel.get();
                 
                 mapper.updateModel(mapper.dtoToModel(dto, objectId), model);
                 
@@ -285,10 +284,9 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
                 List<Rating> filteredRatings = StreamSupport.stream(ratings.spliterator(), false)
                         .filter(rating -> rating.getRatingType() == ratingType).collect(Collectors.toList());
                 
-                IntSummaryStatistics intSummaryStatistics =
-                        filteredRatings.stream().mapToInt(Rating::getUserRating).summaryStatistics();
+                var intSummaryStatistics = filteredRatings.stream().mapToInt(Rating::getUserRating).summaryStatistics();
                 
-                ProfileRatingDto profileRatingDto = new ProfileRatingDto();
+                var profileRatingDto = new ProfileRatingDto();
                 
                 profileRatingDto.setAverageRating(BigDecimal.valueOf(intSummaryStatistics.getAverage()));
                 profileRatingDto.setRatingsCount(intSummaryStatistics.getCount());

@@ -17,10 +17,10 @@ public class RatingService {
     
     public Rating createOrUpdate(ObjectId profileId, Long userId, RatingType ratingType, Integer userRating) {
         
-        Rating rating =
+        var rating =
                 ratingRepository.findByProfileIdAndUserIdAndRatingType(profileId, userId, ratingType).orElseGet(() -> {
                     
-                    Rating newRating = new Rating();
+                    var newRating = new Rating();
                     
                     newRating.setId(new ObjectId());
                     newRating.setProfileId(profileId);
