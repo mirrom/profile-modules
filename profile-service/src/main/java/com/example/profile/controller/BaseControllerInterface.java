@@ -23,56 +23,56 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 interface BaseControllerInterface<D extends BaseDto> {
     
-    @PostMapping
-    ResponseEntity<D> create(@RequestBody D dto);
-    
-    @DeleteMapping("/{id}")
-    ResponseEntity<HttpStatus> delete(@PathVariable String id);
-    
-    @GetMapping("/{id}")
-    ResponseEntity<D> get(@PathVariable String id);
-    
     @GetMapping
     ResponseEntity<List<D>> get(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "asc") String sortDirection,
             @RequestParam(defaultValue = "title") String sortBy, @RequestParam(defaultValue = "") String search);
     
-    @PatchMapping("/{id}")
-    ResponseEntity<D> update(@PathVariable String id, @RequestBody D dto);
+    @PostMapping
+    ResponseEntity<D> create(@RequestBody D dto);
     
-    @PostMapping("/{id}/links")
-    ResponseEntity<LinkDto> createLink(@PathVariable(name = "id") String sourceId, @RequestParam String targetId,
-            @RequestParam LinkType linkType);
+    @GetMapping("/{profileId}")
+    ResponseEntity<D> get(@PathVariable String profileId);
     
-    @DeleteMapping("/{id}/links")
-    ResponseEntity<HttpStatus> deleteLink(@PathVariable(name = "id") String sourceId, @RequestParam String targetId,
-            @RequestParam LinkType linkType);
+    @PatchMapping("/{profileId}")
+    ResponseEntity<D> update(@PathVariable String profileId, @RequestBody D dto);
     
-    @GetMapping("/{id}/links")
-    ResponseEntity<Map<String, List<LinkDto>>> getLinks(@PathVariable(name = "id") String sourceId,
+    @DeleteMapping("/{profileId}")
+    ResponseEntity<HttpStatus> delete(@PathVariable String profileId);
+    
+    @GetMapping("/{profileId}/links")
+    ResponseEntity<Map<String, List<LinkDto>>> getLinks(@PathVariable(name = "profileId") String sourceId,
             @RequestParam(required = false) LinkType linkType);
     
-    @PostMapping("/{id}/backlinks")
-    ResponseEntity<LinkDto> createBacklink(@PathVariable(name = "id") String targetId, @RequestParam String sourceId,
+    @PostMapping("/{profileId}/links/{targetId}")
+    ResponseEntity<LinkDto> createLink(@PathVariable(name = "profileId") String sourceId, @PathVariable String targetId,
             @RequestParam LinkType linkType);
     
-    @DeleteMapping("/{id}/backlinks")
-    ResponseEntity<HttpStatus> deleteBacklink(@PathVariable(name = "id") String targetId, @RequestParam String sourceId,
-            @RequestParam LinkType linkType);
+    @DeleteMapping("/{profileId}/links/{targetId}")
+    ResponseEntity<HttpStatus> deleteLink(@PathVariable(name = "profileId") String sourceId,
+            @PathVariable String targetId, @RequestParam LinkType linkType);
     
-    @GetMapping("/{id}/backlinks")
-    ResponseEntity<Map<String, List<LinkDto>>> getBacklinks(@PathVariable(name = "id") String targetId,
+    @GetMapping("/{profileId}/backlinks")
+    ResponseEntity<Map<String, List<LinkDto>>> getBacklinks(@PathVariable(name = "profileId") String targetId,
             @RequestParam(required = false) LinkType linkType);
     
-    @PostMapping("/{id}/ratings")
-    ResponseEntity<RatingDto> createOrUpdateRating(@PathVariable(name = "id") String profileId,
-            @RequestParam Long userId, @RequestParam RatingType ratingType, @RequestParam Integer userRating);
+    @PostMapping("/{profileId}/backlinks/{sourceId}")
+    ResponseEntity<LinkDto> createBacklink(@PathVariable(name = "profileId") String targetId,
+            @PathVariable String sourceId, @RequestParam LinkType linkType);
     
-    @DeleteMapping("/{id}/ratings")
-    ResponseEntity<HttpStatus> deleteRatings(@PathVariable(name = "id") String profileId,
+    @DeleteMapping("/{profileId}/backlinks/{sourceId}")
+    ResponseEntity<HttpStatus> deleteBacklink(@PathVariable(name = "profileId") String targetId,
+            @PathVariable String sourceId, @RequestParam LinkType linkType);
+    
+    @GetMapping("/{profileId}/ratings")
+    ResponseEntity<Map<String, ProfileRatingDto>> getRatings(@PathVariable String profileId);
+    
+    @PostMapping("/{profileId}/ratings")
+    ResponseEntity<RatingDto> createOrUpdateRating(@PathVariable String profileId, @RequestParam Long userId,
+            @RequestParam RatingType ratingType, @RequestParam Integer userRating);
+    
+    @DeleteMapping("/{profileId}/ratings")
+    ResponseEntity<HttpStatus> deleteRatings(@PathVariable String profileId,
             @RequestParam(required = false) Long userId, @RequestParam(required = false) RatingType ratingType);
-    
-    @GetMapping("/{id}/ratings")
-    ResponseEntity<Map<String, ProfileRatingDto>> getRatings(@PathVariable(name = "id") String profileId);
     
 }

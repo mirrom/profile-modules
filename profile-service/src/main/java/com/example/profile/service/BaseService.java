@@ -35,12 +35,12 @@ public abstract class BaseService<M extends BaseModel, Q extends EntityPath<?>> 
     }
     
     @Override
-    public void delete(ObjectId objectId) {
+    public void delete(ObjectId profileId) {
         
-        repository.deleteById(objectId);
-        linkService.deleteBySourceId(objectId);
-        linkService.deleteByTargetId(objectId);
-        ratingService.deleteByProfileId(objectId);
+        repository.deleteById(profileId);
+        linkService.deleteBySourceId(profileId);
+        linkService.deleteByTargetId(profileId);
+        ratingService.deleteByProfileId(profileId);
     }
     
     public Iterable<M> get(int page, int size, String sortDirection, String sortBy,
@@ -51,9 +51,9 @@ public abstract class BaseService<M extends BaseModel, Q extends EntityPath<?>> 
     }
     
     @Override
-    public Optional<M> get(ObjectId objectId) {
+    public Optional<M> get(ObjectId profileId) {
         
-        return repository.findById(objectId);
+        return repository.findById(profileId);
     }
     
     @Override

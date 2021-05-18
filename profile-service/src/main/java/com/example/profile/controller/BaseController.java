@@ -50,39 +50,7 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
     @Autowired
     private RatingService ratingService;
     
-    public ResponseEntity<D> create(D dto) {
-        
-        return new ResponseEntity<>(mapper.modelToDto(service.create(mapper.dtoToModel(dto))), HttpStatus.CREATED);
-    }
-    
-    public ResponseEntity<HttpStatus> delete(String id) {
-        
-        if (ObjectId.isValid(id)) {
-            
-            service.delete(new ObjectId(id));
-            
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            
-        } else {
-            
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-    
-    public ResponseEntity<D> get(String id) {
-        
-        if (ObjectId.isValid(id)) {
-            
-            return service.get(new ObjectId(id))
-                    .map(model -> new ResponseEntity<>(mapper.modelToDto(model), HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-            
-        } else {
-            
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-    
+    @Override
     public ResponseEntity<List<D>> get(int page, int size, String sortDirection, String sortBy, String search) {
         
         List<D> dtos = new ArrayList<>();
@@ -92,11 +60,33 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
     
-    public ResponseEntity<D> update(String id, D dto) {
+    @Override
+    public ResponseEntity<D> create(D dto) {
         
-        if (ObjectId.isValid(id)) {
+        return new ResponseEntity<>(mapper.modelToDto(service.create(mapper.dtoToModel(dto))), HttpStatus.CREATED);
+    }
+    
+    @Override
+    public ResponseEntity<D> get(String profileId) {
+        
+        if (ObjectId.isValid(profileId)) {
             
-            var objectId = new ObjectId(id);
+            return service.get(new ObjectId(profileId))
+                    .map(model -> new ResponseEntity<>(mapper.modelToDto(model), HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<D> update(String profileId, D dto) {
+        
+        if (ObjectId.isValid(profileId)) {
+            
+            var objectId = new ObjectId(profileId);
             
             Optional<M> optionalModel = service.get(objectId);
             
@@ -112,6 +102,49 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
                 
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<HttpStatus> delete(String profileId) {
+        
+        if (ObjectId.isValid(profileId)) {
+            
+            service.delete(new ObjectId(profileId));
+            
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            
+        } else {
+            
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<Map<String, List<LinkDto>>> getLinks(String sourceId, LinkType linkType) {
+        
+        if (ObjectId.isValid(sourceId)) {
+            
+            Map<String, List<LinkDto>> stringLinkDtosMap = new HashMap<>();
+            
+            List<LinkDto> linkDtos = new ArrayList<>();
+            
+            linkService.getBySourceIdAndLinkType(new ObjectId(sourceId), linkType)
+                    .forEach(link -> linkDtos.add(linkMapper.modelToDto(link)));
+            
+            List<LinkType> linkTypes = new ArrayList<>();
+            
+            linkDtos.forEach(linkDto -> linkTypes.add(linkDto.getLinkType()));
+            
+            linkTypes.stream().distinct().forEach(linkTypee -> stringLinkDtosMap.put(linkTypee.name(),
+                    linkDtos.stream().filter(linkDto -> linkDto.getLinkType() == linkTypee)
+                            .collect(Collectors.toList())));
+            
+            return new ResponseEntity<>(stringLinkDtosMap, HttpStatus.OK);
             
         } else {
             
@@ -150,15 +183,15 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
     }
     
     @Override
-    public ResponseEntity<Map<String, List<LinkDto>>> getLinks(String sourceId, LinkType linkType) {
+    public ResponseEntity<Map<String, List<LinkDto>>> getBacklinks(String targetId, LinkType linkType) {
         
-        if (ObjectId.isValid(sourceId)) {
+        if (ObjectId.isValid(targetId)) {
             
             Map<String, List<LinkDto>> stringLinkDtosMap = new HashMap<>();
             
             List<LinkDto> linkDtos = new ArrayList<>();
             
-            linkService.getBySourceIdAndLinkType(new ObjectId(sourceId), linkType)
+            linkService.getByTargetIdAndLinkType(new ObjectId(targetId), linkType)
                     .forEach(link -> linkDtos.add(linkMapper.modelToDto(link)));
             
             List<LinkType> linkTypes = new ArrayList<>();
@@ -208,26 +241,36 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
     }
     
     @Override
-    public ResponseEntity<Map<String, List<LinkDto>>> getBacklinks(String targetId, LinkType linkType) {
+    public ResponseEntity<Map<String, ProfileRatingDto>> getRatings(String profileId) {
         
-        if (ObjectId.isValid(targetId)) {
+        if (ObjectId.isValid(profileId)) {
             
-            Map<String, List<LinkDto>> stringLinkDtosMap = new HashMap<>();
+            Map<String, ProfileRatingDto> stringProfileRatingDtoMap = new HashMap<>();
             
-            List<LinkDto> linkDtos = new ArrayList<>();
+            Iterable<Rating> ratings = ratingService.getByProfileId(new ObjectId(profileId));
             
-            linkService.getByTargetIdAndLinkType(new ObjectId(targetId), linkType)
-                    .forEach(link -> linkDtos.add(linkMapper.modelToDto(link)));
+            List<RatingType> ratingTypes = new ArrayList<>();
             
-            List<LinkType> linkTypes = new ArrayList<>();
+            ratings.forEach(rating -> ratingTypes.add(rating.getRatingType()));
             
-            linkDtos.forEach(linkDto -> linkTypes.add(linkDto.getLinkType()));
+            ratingTypes.stream().distinct().forEach(ratingType -> {
+                
+                List<Rating> filteredRatings = StreamSupport.stream(ratings.spliterator(), false)
+                        .filter(rating -> rating.getRatingType() == ratingType).collect(Collectors.toList());
+                
+                var intSummaryStatistics = filteredRatings.stream().mapToInt(Rating::getUserRating).summaryStatistics();
+                
+                var profileRatingDto = new ProfileRatingDto();
+                
+                profileRatingDto.setAverageRating(BigDecimal.valueOf(intSummaryStatistics.getAverage()));
+                profileRatingDto.setRatingsCount(intSummaryStatistics.getCount());
+                profileRatingDto.setUserRatings(filteredRatings.stream().collect(
+                        Collectors.toMap(rating -> String.valueOf(rating.getUserId()), Rating::getUserRating)));
+                
+                stringProfileRatingDtoMap.put(ratingType.name(), profileRatingDto);
+            });
             
-            linkTypes.stream().distinct().forEach(linkTypee -> stringLinkDtosMap.put(linkTypee.name(),
-                    linkDtos.stream().filter(linkDto -> linkDto.getLinkType() == linkTypee)
-                            .collect(Collectors.toList())));
-            
-            return new ResponseEntity<>(stringLinkDtosMap, HttpStatus.OK);
+            return new ResponseEntity<>(stringProfileRatingDtoMap, HttpStatus.OK);
             
         } else {
             
@@ -259,44 +302,6 @@ public abstract class BaseController<M extends BaseModel, D extends BaseDto> imp
             ratingService.delete(new ObjectId(profileId), userId, ratingType);
             
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            
-        } else {
-            
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-    
-    @Override
-    public ResponseEntity<Map<String, ProfileRatingDto>> getRatings(String profileId) {
-        
-        if (ObjectId.isValid(profileId)) {
-            
-            Map<String, ProfileRatingDto> stringProfileRatingDtoMap = new HashMap<>();
-            
-            Iterable<Rating> ratings = ratingService.getByProfileId(new ObjectId(profileId));
-            
-            List<RatingType> ratingTypes = new ArrayList<>();
-            
-            ratings.forEach(rating -> ratingTypes.add(rating.getRatingType()));
-            
-            ratingTypes.stream().distinct().forEach(ratingType -> {
-                
-                List<Rating> filteredRatings = StreamSupport.stream(ratings.spliterator(), false)
-                        .filter(rating -> rating.getRatingType() == ratingType).collect(Collectors.toList());
-                
-                var intSummaryStatistics = filteredRatings.stream().mapToInt(Rating::getUserRating).summaryStatistics();
-                
-                var profileRatingDto = new ProfileRatingDto();
-                
-                profileRatingDto.setAverageRating(BigDecimal.valueOf(intSummaryStatistics.getAverage()));
-                profileRatingDto.setRatingsCount(intSummaryStatistics.getCount());
-                profileRatingDto.setUserRatings(filteredRatings.stream().collect(
-                        Collectors.toMap(rating -> String.valueOf(rating.getUserId()), Rating::getUserRating)));
-                
-                stringProfileRatingDtoMap.put(ratingType.name(), profileRatingDto);
-            });
-            
-            return new ResponseEntity<>(stringProfileRatingDtoMap, HttpStatus.OK);
             
         } else {
             

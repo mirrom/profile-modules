@@ -11,11 +11,11 @@ public interface BaseServiceInterface<M extends BaseModel> {
     
     M create(M model);
     
-    void delete(ObjectId objectId);
+    void delete(ObjectId profileId);
     
     Iterable<M> get(int page, int size, String sortDirection, String sortBy, String search);
     
-    Optional<M> get(ObjectId objectId);
+    Optional<M> get(ObjectId profileId);
     
     M update(M model);
     
