@@ -20,15 +20,14 @@ public class SwaggerConfig {
     @Bean
     public Docket apiV1() {
         
-        return new Docket(DocumentationType.SWAGGER_2).groupName("kex.base-v1").apiInfo(apiInfoV1()).select()
+        return new Docket(DocumentationType.SWAGGER_2).groupName("profile-service-v1").apiInfo(apiInfoV1()).select()
                 .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class)).paths(PathSelectors.any())
                 .build();
     }
     
     private ApiInfo apiInfoV1() {
         
-        return new ApiInfoBuilder().title("KEX.base Profile Service")
-                .description("Profile handling for KEX.base knowledge database").version("1.0").build();
+        return new ApiInfoBuilder().title("Profile Service").description("Profile Service").version("1.0").build();
     }
     
 }
