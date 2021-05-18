@@ -4,34 +4,26 @@ import com.example.profile.dto.ProfileDto;
 import com.example.profile.model.Profile;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 
-public abstract class ProfileMapperDecorator implements ProfileMapper {
-    
-    @Autowired
-    @Qualifier("delegate")
-    private ProfileMapper delegate;
-    
-    @Override
-    public Profile dtoToModel(ProfileDto dto, ObjectId objectId) {
-        
-        Profile profile = delegate.dtoToModel(dto, objectId);
-        
-        profile.setId(objectId);
-        
-        return profile;
-    }
+public abstract class ProfileMapperDecorator extends BaseMapperDecorator<Profile, ProfileDto> implements ProfileMapper {
     
     @Override
     public Profile dtoToModel(ProfileDto dto) {
         
-        Profile profile = delegate.dtoToModel(dto);
+        return super.dtoToModel(dto);
+    }
+    
+    @Override
+    public Profile dtoToModel(ProfileDto dto, ObjectId objectId) {
         
-        profile.setId(new ObjectId());
+        return super.dtoToModel(dto, objectId);
+    }
+    
+    @Override
+    public ProfileDto modelToDto(Profile model) {
         
-        return profile;
+        return super.modelToDto(model);
     }
     
 }
